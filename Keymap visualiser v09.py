@@ -62,8 +62,13 @@ cursor_keys = [
     ['F13', 'F14', 'F15'],
     ['INSERT', 'HOME', 'PAGE_UP'],
     ['DELETE', 'END', 'PAGE_DOWN'],
+    [' ', ' ', ' '],
+    [' ', ' ', ' '],
+    [' ', ' ', ' '],
+    [' ', ' ', ' '],
     [' ', 'UP', ' '],
     ['DOWN', 'LEFT', 'RIGHT']
+
 ]
 
 class KeymapCheckerPrefs(bpy.types.PropertyGroup):
@@ -238,9 +243,12 @@ class VIEW3D_PT_KeymapChecker(bpy.types.Panel):
         if platform.system() == 'Darwin':
             row.prop(prefs, "cmd", toggle=True)
         layout.separator()
-        layout.label(text="Keyboard:")
+
+        # Keyboard section with darker background
+        box = layout.box()
+        box.label(text="Keyboard:")
         for row_keys in qwerty_keys:
-            row = layout.row(align=True)
+            row = box.row(align=True)
             for k in row_keys:
                 col = row.column()
                 col.scale_x = 1.0
@@ -248,11 +256,16 @@ class VIEW3D_PT_KeymapChecker(bpy.types.Panel):
                 props = col.operator("wm.select_keymap_key", text=k, depress=(prefs.selected_key == k), emboss=is_used)
                 props.key = k
         layout.separator()
+
+        # Split for Cursor and Numpad sections
         split = layout.split(factor=0.5)
+        
+        # Cursor and Navigation Keys section with darker background
         col_left = split.column()
-        col_left.label(text="Cursor and Navigation Keys:")
+        box_left = col_left.box()
+        box_left.label(text="Cursor and Navigation Keys:")
         for row_keys in cursor_keys:
-            row = col_left.row(align=True)
+            row = box_left.row(align=True)
             for k in row_keys:
                 col = row.column()
                 col.scale_x = 1.0 if k != ' ' else 0.5
@@ -260,10 +273,13 @@ class VIEW3D_PT_KeymapChecker(bpy.types.Panel):
                     is_used = is_key_assigned(k, prefs.editor, prefs.ctrl, prefs.shift, prefs.alt, prefs.cmd)
                     props = col.operator("wm.select_keymap_key", text=k, depress=(prefs.selected_key == k), emboss=is_used)
                     props.key = k
+        
+        # Numpad section with darker background
         col_right = split.column()
-        col_right.label(text="Numpad:")
+        box_right = col_right.box()
+        box_right.label(text="Numpad:")
         for row_keys in numpad_keys:
-            row = col_right.row(align=True)
+            row = box_right.row(align=True)
             for k in row_keys:
                 col = row.column()
                 col.scale_x = 1.0
@@ -272,6 +288,8 @@ class VIEW3D_PT_KeymapChecker(bpy.types.Panel):
                 props = col.operator("wm.select_keymap_key", text=k, depress=(prefs.selected_key == k), emboss=is_used)
                 props.key = k_label
         layout.separator()
+
+        # Assignment Details section
         layout.label(text="Assignment Details:")
         if prefs.selected_key:
             label = []
