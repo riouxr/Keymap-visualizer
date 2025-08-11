@@ -87,13 +87,13 @@ class KeymapCheckerPrefs(bpy.types.PropertyGroup):
     screen_always_on: bpy.props.BoolProperty(
         name="Screen Always ON",
         description="Also consider Screen/Window/UI keymaps with the chosen editor",
-        default=False
+        default=True
     )
     # NEW: hide modal map results (Knife/Bevel/Transform modal, etc.)
     hide_modal: bpy.props.BoolProperty(
         name="Hide Model",
         description="Hide modal keymap results (Knife/Bevel/Transform modal maps, etc.)",
-        default=False
+        default=True
     )
     ctrl: bpy.props.BoolProperty(name="Ctrl", default=False)
     shift: bpy.props.BoolProperty(name="Shift", default=False)
