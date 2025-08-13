@@ -25,6 +25,7 @@ editor_map = {
     'DOPESHEET_EDITOR': 'Dopesheet',
     'NLA_EDITOR': 'NLA Editor',
     'IMAGE_EDITOR': 'Image',
+    'UV': 'UV Editor',  # Added for Blender 4.5+
     'OUTLINER': 'Outliner',
     'NODE_EDITOR': 'Node Editor',
     'SEQUENCE_EDITOR': 'Video Sequence Editor',
@@ -39,8 +40,9 @@ editor_map = {
     'TIMELINE': 'Frames',
     'MARKER': 'Markers',
     'ANIMATION': 'Animation',
-    'CHANNELS': 'Animation Channels',
+    'CHANNELS': 'Animation Channels'
 }
+
 
 # ---------------------------------------------
 # Keyboard layouts to render
@@ -111,7 +113,8 @@ def is_relevant_keymap(km, editor):
     """
     Return True only for keymaps that belong to the chosen editor.
     - Exact space_type match always counts.
-    - For global scopes (SCREEN/EMPTY/USER_INTERFACE), accept broad names.
+    - UV Editor in Blender >= 4.5: accept by name too (some maps don't report space_type='UV').
+    - For global scopes (SCREEN/EMPTY/USER_INTERFACE), accept broad/global names.
     """
     space = km.space_type or 'EMPTY'
     name = (km.name or "")
@@ -120,13 +123,23 @@ def is_relevant_keymap(km, editor):
     if space == editor:
         return True
 
+    # Special handling for UV Editor in 4.5+
+    if editor == 'UV':
+        # Many UV maps have names like "UV Editor", "UV Sculpt", "UV Editor Tool..."
+        if ('UV' in name) or ('UV Editor' in name):
+            return True
+        # Also accept legacy cases where UV lived under Image Editor
+        if space == 'IMAGE_EDITOR' and ('UV' in name or 'UV Editor' in name):
+            return True
+
     # Global scopes accept broad/global names
     if editor in {'SCREEN', 'EMPTY', 'USER_INTERFACE'}:
         global_keywords = ("Window", "Screen", "Global", "User Interface", "UI", "PME", "Pie Menu Editor")
         return any(k in name for k in global_keywords)
 
-    # For non-global editors: NO fuzzy matching
+    # Otherwise, no fuzzy matching
     return False
+
 
 def normalize_key_types(label: str):
     """
