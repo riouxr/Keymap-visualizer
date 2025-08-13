@@ -1,5 +1,5 @@
 schema_version = "1.0.0"
-id = "Keymap Visualiser"
+id = "KeymapVisualiser"
 version = "1.1.0"
 name = "Keymap Visualiser"
 tagline = "Shows which keymaps are already taken and flgs conflicts"

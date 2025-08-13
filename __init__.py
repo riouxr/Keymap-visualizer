@@ -1,8 +1,8 @@
 bl_info = {
     "name": "Keymap Visualizer - Enhanced Layout",
     "author": "ChatGPT + User",
-    "version": (1, 34),
-    "blender": (3, 0, 0),
+    "version": (1, 0, 1),
+    "blender": (4, 2, 0),
     "location": "3D View > Sidebar > Keymap",
     "description": "Visualizes assigned hotkeys with enhanced keyboard layout, full hierarchy support",
     "category": "Interface",
@@ -412,12 +412,12 @@ class WM_OT_SelectKey(bpy.types.Operator):
 # Panel
 # ---------------------------------------------
 class VIEW3D_PT_KeymapChecker(bpy.types.Panel):
-    bl_label = "Keymap Visualizer"
+    bl_label = "KeymapVisualizer"
     bl_idname = "VIEW3D_PT_keymap_visualizer"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Keymap'
-    bl_context = "objectmode"
+
 
     def draw(self, context):
         layout = self.layout
