@@ -2,7 +2,7 @@ bl_info = {
     "name": "Keymap Visualizer - Enhanced Layout",
     "author": "ChatGPT + User",
     "version": (1, 0, 1),
-    "blender": (4, 2, 0),
+    "blender": (4, 4.5, 0),
     "location": "3D View > Sidebar > Keymap",
     "description": "Visualizes assigned hotkeys with enhanced keyboard layout, full hierarchy support",
     "category": "Interface",
@@ -244,6 +244,17 @@ def _modifiers_match(kmi, ctrl, shift, alt, cmd):
         bool(kmi.oskey) == bool(cmd)
     )
 
+
+def _sources_include_blender_user(label: str) -> bool:
+    """
+    Return True if the 'sources' portion of the label contains 'Blender User' (case-insensitive).
+    Example label: 'Blender, Blender user, keymap4.2: UV Editor > uv.pin (Pin)'
+    """
+    try:
+        sources_part = label.split(":", 1)[0]
+    except Exception:
+        sources_part = label
+    return "blender user" in sources_part.lower()
 def _global_editors_for_merge():
     return ('SCREEN', 'EMPTY', 'USER_INTERFACE')
 
@@ -329,6 +340,7 @@ def get_keymap_matches_in_editor(key_label, editor, ctrl, shift, alt, cmd, hide_
         km, kmi, kc_names = merged[sig]
         sources = ", ".join(sorted(kc_names))
         out.append(_format_kmi_label(sources, km, kmi))
+    out = [lab for lab in out if _sources_include_blender_user(lab)]
     return out
 
 def is_key_assigned_in_editor(key_label, editor, ctrl, shift, alt, cmd, hide_modal=False):
@@ -395,6 +407,7 @@ def get_keymap_conflicts(key_label, current_editor, ctrl, shift, alt, cmd, hide_
         km, kmi, kc_names = merged[sig]
         sources = ", ".join(sorted(kc_names))
         out.append(_format_kmi_label(sources, km, kmi))
+    out = [lab for lab in out if _sources_include_blender_user(lab)]
     return out
 
 # ---------------------------------------------
